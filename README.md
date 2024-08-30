@@ -1,2 +1,1 @@
-# zsh-plugin-caesardev
-Personal dev zsh plugin
+Personal daily dev utilities.
