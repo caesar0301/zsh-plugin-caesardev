@@ -50,6 +50,8 @@ alias ag_bazel='ag --ignore-dir="build" -G "(BUILD|.\.bazel)"'
 # k8s
 alias k="kubectl"
 
+alias java_decompile="java -jar $HOME/.local/bin/cfr-0.152.jar"
+
 #+++++++++++++++++++++++++++++++++++++++
 # functions
 #+++++++++++++++++++++++++++++++++++++++
@@ -221,15 +223,6 @@ function _initHaskellEnv {
     fi
 }
 
-function _initJavaEnv {
-    # .jenv
-    export PATH="$HOME/.jenv/bin:$PATH"
-    eval "$(jenv init -)"
-    # jenv enable-plugin export > /dev/null
-    # Java decompiler
-    alias java_decompile="java -jar $HOME/.local/bin/cfr-0.152.jar"
-}
-
 # Quick start a maven project with template
 function maven-quickstart {
     mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes \
@@ -268,7 +261,6 @@ function _mymain_ {
     _initRustEnv
     _initCuda
     _initHaskellEnv
-    _initJavaEnv
     if [[ $OSTYPE == darwin* ]]; then
         _initMacEnv
     fi
