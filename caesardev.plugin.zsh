@@ -1,8 +1,3 @@
-#!/usr/bin/bash
-0="${ZERO:-${${0:#$ZSH_ARGZERO}:-${(%):-%N}}}"
-0="${${(M)0:#/*}:-$PWD/$0}"
-PLUGHOME=$(dirname $0)
-
 # Perf
 alias psmem="ps -o pid,user,%mem,command ax | sort -b -k3 -r"
 
@@ -26,21 +21,6 @@ alias pc="proxychains4 -q"
 
 # Editor
 export EDITOR=vim
-
-# Git aliases
-alias ga="git add"
-alias gb="git branch"
-alias gba="git branch -av"
-alias gd="git diff --ws-error-highlight=all"
-alias gdc="git diff --cached"
-alias ghf="git log --follow -p --"
-alias gll="git log | less"
-alias grsh="git reset --soft HEAD^ && git reset --hard HEAD"
-alias gsrh="git submodule foreach --recursive git reset --hard"
-alias gsur="git submodule update --init --recursive"
-alias git-quick-update="git add -u && git commit -m \"Quick update\" && git push"
-alias git-submodule-latest="git submodule foreach git pull origin master"
-alias gcmm="git commit -m"
 
 # Ag searching
 alias ag_scons='ag --ignore-dir="build" -G "(SConscript|SConstruct)"'
@@ -100,6 +80,24 @@ function occ {
     ${=EDITOR} $cf
 }
 
+# Quick start a maven project with template
+function maven-quickstart {
+    mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes \
+        -DarchetypeArtifactId=maven-archetype-quickstart \
+        -DarchetypeVersion=1.4 $@
+}
+
+# Quick start a local http server with python
+function local-http-server {
+    # Check python major version
+    PYV=$(python -c "import sys;t='{v[0]}'.format(v=list(sys.version_info[:1]));sys.stdout.write(t)")
+    if [ "$PYV" -eq "3" ]; then
+        python -m http.server 8899
+    else
+        python -m SimpleHTTPServer 8899
+    fi
+}
+
 function _flatpak_aliases {
     FLATPAK_HOME=/var/lib/flatpak
     FLATPAK_BIN=${FLATPAK_HOME}/exports/bin
@@ -131,35 +129,6 @@ function _appimages_aliases {
         done
     fi
 }
-
-function git-reset-recurse-submodules {
-    #Cleans and resets a git repo and its submodules
-    #https://gist.github.com/nicktoumpelis/11214362
-    git reset --hard
-    git submodule sync --recursive
-    git submodule update --init --force --recursive
-    git clean -ffdx
-    git submodule foreach --recursive git clean -ffdx
-}
-
-# Remove deleted file from git cache
-function git-prune-cache {
-    FILES=$(git ls-files -d)
-    if [[ ! -z $FILES ]]; then
-        git rm $FILES
-    else
-        echo "No deleted files"
-    fi
-}
-
-# Remove git submodule
-function git-prune-submodule {
-    SUBMODULE=$1
-    git submodule deinit -f -- $SUBMODULE
-    rm -rf .git/modules/$SUBMODULE
-    git rm -f $SUBMODULE
-}
-
 
 function _initGoenv {
     GOROOT=${GOROOT:-/usr/local/go}
@@ -222,39 +191,6 @@ function _initHaskellEnv {
         export PATH="$HOME/.cabal/bin:$PATH"
     fi
 }
-
-# Quick start a maven project with template
-function maven-quickstart {
-    mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes \
-        -DarchetypeArtifactId=maven-archetype-quickstart \
-        -DarchetypeVersion=1.4 $@
-}
-
-# Quick start a local http server with python
-function local-http-server {
-    # Check python major version
-    PYV=$(python -c "import sys;t='{v[0]}'.format(v=list(sys.version_info[:1]));sys.stdout.write(t)")
-    if [ "$PYV" -eq "3" ]; then
-        python -m http.server 8899
-    else
-        python -m SimpleHTTPServer 8899
-    fi
-}
-
-# Prune all docker junk data
-function docker-prune-all {
-    yes y | docker container prune
-    yes y | docker image prune
-    yes y | docker volume prune
-}
-
-# Docker image tag generator
-function docker-gen-image-version {
-    TAG="${1:-notag}"
-    MODE="${2:-release}"
-    echo ${MODE}_$(date +"%Y%m%d%H%M%S")_${TAG}_$(git rev-parse HEAD | head -c 8)
-}
-
 
 function _mymain_ {
     _initGoenv
