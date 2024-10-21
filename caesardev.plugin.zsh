@@ -2,83 +2,28 @@
 alias psmem="ps -o pid,user,%mem,command ax | sort -b -k3 -r"
 
 # Editor
-alias vi=nvim
+alias vi=vim
 alias vim=nvim
-alias em='emacs -nw'
-
-# Stat.
-alias duh="du -hs .[^.]*"
+export EDITOR=vim
 
 # StarDict console
 # Install dicts into ~/.local/share/stardict/dic or /usr/share/stardict/dic
 alias dict="sdcv -0 -c"
 
-# Rsync preseving symlinks, timestamps, permissions
-alias rsync2="rsync -rlptgoD --progress"
-
 # Proxy shortcut
 alias pc="proxychains4 -q"
-
-# Editor
-export EDITOR=vim
 
 # Ag searching
 alias ag_scons='ag --ignore-dir="build" -G "(SConscript|SConstruct)"'
 alias ag_cmake='ag --ignore-dir="build" -G "(ODPSBuild.txt|CMakeLists.txt|.\.cmake)"'
 alias ag_bazel='ag --ignore-dir="build" -G "(BUILD|.\.bazel)"'
 
-# k8s
-alias k="kubectl"
-
+# java
 alias java_decompile="java -jar $HOME/.local/bin/cfr-0.152.jar"
 
 #+++++++++++++++++++++++++++++++++++++++
 # functions
 #+++++++++++++++++++++++++++++++++++++++
-
-# Overhead configrator for apps
-function occ {
-    subcommand=$1;
-    if [ ! -z $subcommand ]; then
-        shift
-    fi
-    case "$subcommand" in
-        emacs|em) cf=$HOME/.emacs.d/init.el
-        ;;
-        vi|vim|nvim) cf=$HOME/.config/nvim/init.lua
-        ;;
-        zsh) cf=${ZSH_CONFIG_DIR}/init.zsh
-            while getopts eh opt; do
-                case $opt in
-                    e)    cf=$HOME/.zshenv ;;
-                    h|?)  echo "occ zsh [-e]" && return;;
-                esac
-            done
-        ;;
-        ssh) cf=$HOME/.ssh/config
-        ;;
-        tmux) cf=$HOME/.config/tmux/tmux.conf.local
-        ;;
-        clash) cf=$HOME/.config/clash/config.yaml
-        ;;
-        proxychains|pc) cf=/etc/proxychains.conf
-        ;;
-        yum) cf=/etc/yum.conf
-        ;;
-        apt) cf=/etc/apt/sources.list
-        ;;
-        conan) cf=$HOME/.conan2/profiles/default
-        ;;
-        * ) # Invalid subcommand
-            if [ ! -z $subcommand ]; then  # Don't show if no subcommand provided
-                echo "Invalid subcommand: $subcommand"
-            fi
-            echo "Usage: occ <emacs|em|vim|vi|zsh|ssh|tmux|clash|pc|yum|apt|conan>"
-            return
-        ;;
-    esac
-    ${=EDITOR} $cf
-}
 
 # Quick start a maven project with template
 function maven-quickstart {
